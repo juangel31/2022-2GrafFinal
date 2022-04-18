@@ -31,7 +31,7 @@ void palmera_animacion::animacion(bool *activar) {
 
 	case 1://cae la manzana
 		plusy = plusy - 0.1f;
-		if (plusy <= -41.8f)
+		if (plusy <= -35.8f)
 			edo = 2;
 		break;
 
@@ -42,13 +42,13 @@ void palmera_animacion::animacion(bool *activar) {
 		break;
 	case 3://vuelve a caer
 		plusy = plusy - 0.1f;
-		if (plusy <= -38.8f)
+		if (plusy <= -35.8f)
 			edo = 4;
 		break;
 	case 4://gira al borde
 		plusz = plusz - 0.1f;
 		rot_wumpa--;
-		if (plusz <= -20.53)
+		if (plusz <= -25.53)
 			edo = 5;
 		break;
 	case 5://cae del sillon
@@ -64,11 +64,12 @@ void palmera_animacion::animacion(bool *activar) {
 }
 void palmera_animacion::dibujar(GLuint uniformModel) {
 	model = glm::mat4(1.0);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(posx, posy, posz));
+	model = glm::rotate(model, 180*toRadians, glm::vec3(0.0, 1.0, 0.0));//rotacion caminar
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	palmera.RenderModel();
 
-	modelaux = glm::translate(model, glm::vec3(0.0f, -3.17f, -16.72f));
+	modelaux = glm::translate(model, glm::vec3(0.0f, 3.17f, -16.72f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
 	sillon.RenderModel();
 	modelaux = glm::translate(model, glm::vec3(0.0f + plusx, 52.852f + plusy, -14.126f + plusz));
@@ -76,4 +77,17 @@ void palmera_animacion::dibujar(GLuint uniformModel) {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
 	wumpa_palmera.RenderModel();
 	
+}
+void palmera_animacion::dibujar_palmera(float x, float y, float z, GLuint uniformModel) {
+	model = glm::mat4(1.0);
+	model = glm::translate(model, glm::vec3(x, y, z));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	palmera.RenderModel();
+}
+
+void palmera_animacion::dibujar_wumpa(float x, float y, float z, GLuint uniformModel) {
+	model = glm::mat4(1.0);
+	model = glm::translate(model, glm::vec3(x, y, z));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	wumpa_palmera.RenderModel();
 }

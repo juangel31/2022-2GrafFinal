@@ -14,6 +14,8 @@ public:
 	palmera_animacion( float x, float y, float z);
 	void animacion(bool *activar);
 	void dibujar(GLuint uniformModel);
+	void dibujar_wumpa(float x, float y, float z, GLuint uniformModel);
+	void dibujar_palmera(float x, float y, float z, GLuint uniformModel);
 private:
 	Model sillon;
 	Model palmera;
