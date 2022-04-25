@@ -15,19 +15,23 @@ public:
 
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
-
+	void setOrientation(glm::vec3 posModelo);
+	void setPosicionBase(glm::vec3 posModelo);
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();
-	glm::mat4 calculateViewMatrix();
-
+	glm::mat4 calculateViewMatrix( bool tipo);
+	glm::mat4 calculateViewMatrix2();
 	~Camera();
 
 private:
+
 	glm::vec3 position;
 	glm::vec3 front;
 	glm::vec3 up;
 	glm::vec3 right;
 	glm::vec3 worldUp;
+	glm::vec3 orientation;
+	glm::vec3 positionBase;
 
 	GLfloat yaw;
 	GLfloat pitch;
@@ -36,5 +40,6 @@ private:
 	GLfloat turnSpeed;
 
 	void update();
+	void update2();
 };
 

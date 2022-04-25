@@ -49,22 +49,31 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	yaw += xChange;
 	pitch += yChange;
 
-	if (pitch > 89.0f)
+	if (pitch > 45.0f)
 	{
-		pitch = 89.0f;
+		pitch = 45.0f;
 	}
 
-	if (pitch < -89.0f)
+	if (pitch < -45.0f)
 	{
-		pitch = -89.0f;
+		pitch = -45.0f;
 	}
 
-	update();
+	update2();
 }
 
-glm::mat4 Camera::calculateViewMatrix()
+glm::mat4 Camera::calculateViewMatrix(bool tipo)
 {
-	return glm::lookAt(position, position + front, up);
+	if (tipo)
+		return glm::lookAt(position, orientation, up);
+	else
+		return glm::lookAt(glm::vec3(positionBase.x, positionBase.y + 200, positionBase.z), positionBase, glm::vec3(0.0f, 0.0f, -1.0f));
+
+}
+
+glm::mat4 Camera::calculateViewMatrix2()
+{
+	return glm::lookAt(glm::vec3(positionBase.x,positionBase.y+200,positionBase.z), positionBase, glm::vec3(0.0f,0.0f,-1.0f));
 }
 
 glm::vec3 Camera::getCameraPosition()
@@ -89,7 +98,17 @@ void Camera::update()
 	up = glm::normalize(glm::cross(right, front));
 }
 
-
+void Camera::setOrientation(glm::vec3 posModelo) {
+	orientation = posModelo;
+}
+void Camera::setPosicionBase(glm::vec3 posModelo) {
+	positionBase = posModelo;
+}
+void Camera :: update2() {
+	position.x = positionBase.x- (70.0f* sin(glm::radians(pitch)))*cos(glm::radians(yaw));
+	position.y = positionBase.y + 0*70.0f* sin(glm::radians(pitch));
+	position.z= positionBase.z- (70.0f* sin(glm::radians(pitch)))*sin(glm::radians(yaw));
+}
 Camera::~Camera()
 {
 }

@@ -52,7 +52,7 @@ Texture plainTexture;
 Texture pisoTexture;
 Texture crashTexture;
 bool activar = false;
-
+bool camaraT = true;
 ////////////////////////////////////////////////////Variable crash
 int orientacion = 0,edoataque=4; // 0->+z	1->-z	2->x	3->-x
 float rotCaminar = 0,posxCrash=0.0f,posyCrash=0.0f,rotPiernas=0.0f,rotBrazoz=0.0f;
@@ -71,6 +71,11 @@ Skybox skybox;
 Model suelo;
 Model tv;
 Model totem;
+Model caja_clasica;
+Model tnt;
+Model jump;
+Model aku;
+Model interrogacion;
 
 //Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
@@ -475,7 +480,7 @@ int main()
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 1.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(posxCrash, 25.0f, posyCrash), -60.0f, 0.0f, 1.0f, 0.5f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureA();
@@ -522,6 +527,17 @@ int main()
 		10.0f);
 	spotLightCount++;
 
+
+	tnt = Model();
+	tnt.LoadModel("Models/cajas/tnt_optimizado.obj");
+	jump = Model();
+	jump.LoadModel("Models/cajas/jump_optimizado.obj");
+	caja_clasica = Model();
+	caja_clasica.LoadModel("Models/cajas/caja_basica_optimizado.obj");
+	aku = Model();
+	aku.LoadModel("Models/cajas/aku_aku_optimizado.obj");
+	interrogacion = Model();
+	interrogacion.LoadModel("Models/cajas/interrogacion_optimizado.obj");
 	//////////////////////////////////////////////////////////Carda de modelos animación
 	Mariposa mariposa1 = Mariposa(0.0f, 5.0f, 0.0f);
 	palmera_animacion palmeraAnimada = palmera_animacion(-114.0f,-4.0f,-119.f);
@@ -566,7 +582,7 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+		skybox.DrawSkybox(camera.calculateViewMatrix(camaraT), projection);
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
@@ -574,7 +590,7 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix(camaraT)));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 		
@@ -631,7 +647,48 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		tv.RenderModel();
 
+		palmeraAnimada.dibujar_wumpa(0.0f,4.0f,-46.6f,uniformModel);
+		palmeraAnimada.dibujar_wumpa(0.0f, 4.0f, -96.6f, uniformModel);
+		palmeraAnimada.dibujar_wumpa(0.0f, 4.0f, -146.6f, uniformModel);
+		palmeraAnimada.dibujar_wumpa(0.0f, 4.0f, -196.6f, uniformModel);
+
+		palmeraAnimada.dibujar_palmera(-114.0,-4.0,-214.0,uniformModel);
+		palmeraAnimada.dibujar_palmera(-181.0, -4.0, -214.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(-181.0, -4.0, -78.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(-89.0, -4.0, -306.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(-228.0, -4.0, -306.0, uniformModel);
+
+		palmeraAnimada.dibujar_palmera(114.0, -4.0, -214.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(181.0, -4.0, -214.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(181.0, -4.0, -78.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(89.0, -4.0, -306.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(228.0, -4.0, -306.0, uniformModel);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(159.72f, 0.0f, -2.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tnt.RenderModel();
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(114.72f, 0.0f, -70.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		aku.RenderModel();
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-95.0f, 0.0f, -2.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		caja_clasica.RenderModel();
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-132.72f, 0.0f, -2.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		caja_clasica.RenderModel();
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-132.72f, 52.0f, -52.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		caja_clasica.RenderModel();
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-132.72f, 0.0f, -52.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		jump.RenderModel();
+
 		////////////////////////////////////////////////////////////////////////////////////////////////Construcción crash
+		camera.setOrientation(glm::vec3(posxCrash, 25.0f, posyCrash));
+		camera.setPosicionBase(glm::vec3(posxCrash, 25.0f, posyCrash));
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(posxCrash, 0.0f, posyCrash));
 		model = glm::translate(model, glm::vec3(0.0f, 25.0f, 0.0f));
 		model = glm::rotate(model,rotCaminar*toRadians,glm::vec3(0.0,1.0,0.0));//rotacion caminar
@@ -722,6 +779,12 @@ void teclado(bool* keys) {
 	else
 	{
 		animCaminar = false;
+	}
+	if (keys[GLFW_KEY_1]) {
+		camaraT = true;
+	}
+	if (keys[GLFW_KEY_2]) {
+		camaraT = false;
 	}
 	if (keys[GLFW_KEY_U]) {
 		if (edoataque == 4 && !ataque) {

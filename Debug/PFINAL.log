@@ -1,6 +1,8 @@
-﻿  CargaModelos.cpp
+﻿  Camera.cpp
+  CargaModelos.cpp
 c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\window.h(12): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
 c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\window.h(13): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(510): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(512): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(572): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(574): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+  Generando código...
   PFINAL.vcxproj -> C:\Users\juang\Documents\2022-2\C_graf\lab\Lab_sol\Debug\PFINAL.exe

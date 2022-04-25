@@ -83,11 +83,19 @@ void palmera_animacion::dibujar_palmera(float x, float y, float z, GLuint unifor
 	model = glm::translate(model, glm::vec3(x, y, z));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	palmera.RenderModel();
+	
 }
 
 void palmera_animacion::dibujar_wumpa(float x, float y, float z, GLuint uniformModel) {
 	model = glm::mat4(1.0);
-	model = glm::translate(model, glm::vec3(x, y, z));
+	model = glm::translate(model, glm::vec3(x, y + 2 * sin(levitacion*toRadians), z));
+	model = glm::rotate(model, rot_manzana*toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	wumpa_palmera.RenderModel();
+	rot_manzana=rot_manzana+0.1f;
+	levitacion = levitacion + 0.1;
+	if (levitacion > 369)
+		levitacion = 0.0;
+	if (rot_manzana > 360)
+		rot_manzana = 0.0;
 }
