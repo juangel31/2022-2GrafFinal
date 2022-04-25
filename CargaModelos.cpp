@@ -19,6 +19,13 @@ Práctica 5: Carga de Modelos
 #include <gtc\type_ptr.hpp>
 //para probar el importer
 //#include<assimp/Importer.hpp>
+//para iluminación
+#include "CommonValues.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
+#include "Material.h"
+
 
 #include "Window.h"
 #include "Mesh.h"
@@ -45,7 +52,7 @@ Texture plainTexture;
 Texture pisoTexture;
 Texture crashTexture;
 bool activar = false;
-
+bool camaraT = true;
 ////////////////////////////////////////////////////Variable crash
 int orientacion = 0,edoataque=4; // 0->+z	1->-z	2->x	3->-x
 float rotCaminar = 0,posxCrash=0.0f,posyCrash=0.0f,rotPiernas=0.0f,rotBrazoz=0.0f;
@@ -59,6 +66,17 @@ Model pulpo_alto;
 float rot_baja, rot_medio, rot_alto;
 Skybox skybox;
 
+
+///////////////////////////////////////////////////////////////Models importados directamente
+Model suelo;
+Model tv;
+Model totem;
+Model caja_clasica;
+Model tnt;
+Model jump;
+Model aku;
+Model interrogacion;
+
 //Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -71,7 +89,11 @@ static const char* vShader = "shaders/shader_light.vert";
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 void teclado(bool* keys);
-
+// luz direccional
+DirectionalLight mainLight;
+//para declarar varias luces de tipo pointlight
+PointLight pointLights[MAX_POINT_LIGHTS];
+SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 
 void CreateObjects()
@@ -458,7 +480,7 @@ int main()
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 1.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(posxCrash, 25.0f, posyCrash), -60.0f, 0.0f, 1.0f, 0.5f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureA();
@@ -481,9 +503,44 @@ int main()
 	pulpo_alto.LoadModel("Models/pulpo/pulpo_alto.obj");
 	
 
+	suelo = Model();
+	suelo.LoadModel("Models/suelo/suelo_optimizado.obj");
+	totem = Model();
+	totem.LoadModel("Models/totem/totem_optimizado.obj");
+	unsigned int pointLightCount = 0;
+	//Declaración de primer luz puntual
+	pointLights[0] = PointLight(1.0f, 0.5f, 0.0f,
+		9.0f, 30.0f,
+		82.95f, 15.0f, -120.84f,
+		0.8f, 0.1f, 0.1f);
+	pointLightCount++;
+
+	tv = Model();
+	tv.LoadModel("Models/tv/tv_optimizado.obj");
+	unsigned int spotLightCount = 0;
+	//linterna
+	spotLights[0] = SpotLight(0.3f, 0.3f, 0.3f,
+		1.0f, 1.0f,
+		190.72f, 10.0f, -10.0f,
+		-1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+
+	tnt = Model();
+	tnt.LoadModel("Models/cajas/tnt_optimizado.obj");
+	jump = Model();
+	jump.LoadModel("Models/cajas/jump_optimizado.obj");
+	caja_clasica = Model();
+	caja_clasica.LoadModel("Models/cajas/caja_basica_optimizado.obj");
+	aku = Model();
+	aku.LoadModel("Models/cajas/aku_aku_optimizado.obj");
+	interrogacion = Model();
+	interrogacion.LoadModel("Models/cajas/interrogacion_optimizado.obj");
 	//////////////////////////////////////////////////////////Carda de modelos animación
 	Mariposa mariposa1 = Mariposa(0.0f, 5.0f, 0.0f);
-	palmera_animacion palmeraAnimada = palmera_animacion(0.0f,0.f,0.f);
+	palmera_animacion palmeraAnimada = palmera_animacion(-114.0f,-4.0f,-119.f);
 
 
 
@@ -498,12 +555,17 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
 
+	//luz direccional, sólo 1 y siempre debe de existir
+	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
+		0.6f, 0.9f,
+		0.0f, -1.0f, 0.0f);
+
 	skybox = Skybox(skyboxFaces);
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
-	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1500.0f);
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -520,7 +582,7 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+		skybox.DrawSkybox(camera.calculateViewMatrix(camaraT), projection);
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
@@ -528,21 +590,27 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix(camaraT)));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
+		
+		////////////////////////////////////////////ILUMINACION
+		shaderList[0].SetDirectionalLight(&mainLight);
+		shaderList[0].SetPointLights(pointLights, pointLightCount);
+		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 
 		pisoTexture.UseTexture();
-		meshList[2]->RenderMesh();
+		suelo.RenderModel();
+		//meshList[2]->RenderMesh();
 
 		///////////////////////////////////////////////////////////////////////////////////////////////Pruebas
 		/*model = glm::mat4(1.0f);
@@ -565,7 +633,62 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pulpo_alto.RenderModel();
 */
+
+
+
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////////Carga elementos decorativos y de iluminacion
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(82.95f,0.0f,-116.84f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		totem.RenderModel();
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(115.72f, 0.0f, -7.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tv.RenderModel();
+
+		palmeraAnimada.dibujar_wumpa(0.0f,4.0f,-46.6f,uniformModel);
+		palmeraAnimada.dibujar_wumpa(0.0f, 4.0f, -96.6f, uniformModel);
+		palmeraAnimada.dibujar_wumpa(0.0f, 4.0f, -146.6f, uniformModel);
+		palmeraAnimada.dibujar_wumpa(0.0f, 4.0f, -196.6f, uniformModel);
+
+		palmeraAnimada.dibujar_palmera(-114.0,-4.0,-214.0,uniformModel);
+		palmeraAnimada.dibujar_palmera(-181.0, -4.0, -214.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(-181.0, -4.0, -78.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(-89.0, -4.0, -306.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(-228.0, -4.0, -306.0, uniformModel);
+
+		palmeraAnimada.dibujar_palmera(114.0, -4.0, -214.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(181.0, -4.0, -214.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(181.0, -4.0, -78.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(89.0, -4.0, -306.0, uniformModel);
+		palmeraAnimada.dibujar_palmera(228.0, -4.0, -306.0, uniformModel);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(159.72f, 0.0f, -2.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tnt.RenderModel();
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(114.72f, 0.0f, -70.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		aku.RenderModel();
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-95.0f, 0.0f, -2.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		caja_clasica.RenderModel();
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-132.72f, 0.0f, -2.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		caja_clasica.RenderModel();
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-132.72f, 52.0f, -52.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		caja_clasica.RenderModel();
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-132.72f, 0.0f, -52.054f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		jump.RenderModel();
+
 		////////////////////////////////////////////////////////////////////////////////////////////////Construcción crash
+		camera.setOrientation(glm::vec3(posxCrash, 25.0f, posyCrash));
+		camera.setPosicionBase(glm::vec3(posxCrash, 25.0f, posyCrash));
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(posxCrash, 0.0f, posyCrash));
 		model = glm::translate(model, glm::vec3(0.0f, 25.0f, 0.0f));
 		model = glm::rotate(model,rotCaminar*toRadians,glm::vec3(0.0,1.0,0.0));//rotacion caminar
@@ -620,8 +743,8 @@ int main()
 		giroAtaque();
 		///////////////////////////////////////////////////////////////////////////////////////////////Carga de dibujo y animación por clases
 		
-		//palmeraAnimada.dibujar(uniformModel);
-		//palmeraAnimada.animacion(&activar);
+		palmeraAnimada.dibujar(uniformModel);
+		palmeraAnimada.animacion(&activar);
 		glUseProgram(0);
 
 		mainWindow.swapBuffers();
@@ -656,6 +779,12 @@ void teclado(bool* keys) {
 	else
 	{
 		animCaminar = false;
+	}
+	if (keys[GLFW_KEY_1]) {
+		camaraT = true;
+	}
+	if (keys[GLFW_KEY_2]) {
+		camaraT = false;
 	}
 	if (keys[GLFW_KEY_U]) {
 		if (edoataque == 4 && !ataque) {

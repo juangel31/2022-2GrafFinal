@@ -14,6 +14,8 @@ public:
 	palmera_animacion( float x, float y, float z);
 	void animacion(bool *activar);
 	void dibujar(GLuint uniformModel);
+	void dibujar_wumpa(float x, float y, float z, GLuint uniformModel);
+	void dibujar_palmera(float x, float y, float z, GLuint uniformModel);
 private:
 	Model sillon;
 	Model palmera;
@@ -22,6 +24,7 @@ private:
 	float plusx = 0.0f, plusy = 0.0f, plusz = 0.0f, rot_wumpa = 0.0f;
 	float posx, posy, posz;
 	int edo = 0;
+	float rot_manzana = 0.0f, levitacion = 0.0f;
 	glm::mat4 model, modelaux;
 
 };
