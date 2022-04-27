@@ -13,6 +13,8 @@ public:
 	void UseLight(GLfloat ambientIntensityLocation, GLfloat ambientcolorLocation,
 		GLfloat diffuseIntensityLocation, GLfloat directionLocation);
 
+	void setDir(GLfloat x, GLfloat y, GLfloat z);
+
 	~DirectionalLight();
 
 private:

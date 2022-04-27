@@ -37,6 +37,7 @@ Práctica 5: Carga de Modelos
 #include "Skybox.h"
 #include "Mariposa.h"
 #include "palmera_animacion.h"
+#include "Luciernaga.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -92,8 +93,8 @@ void teclado(bool* keys);
 // luz direccional
 DirectionalLight mainLight;
 //para declarar varias luces de tipo pointlight
-PointLight pointLights[MAX_POINT_LIGHTS];
-SpotLight spotLights[MAX_SPOT_LIGHTS];
+PointLight pointLights[5];
+SpotLight spotLights[1];
 
 
 void CreateObjects()
@@ -462,6 +463,32 @@ void giroAtaque() {
 		}
 	}
 }
+bool parabolico;
+float xp, yp,zp;
+float t;
+int edoParabolico=0.0;
+void parabolico_wumpa() {
+	
+		switch (edoParabolico)
+		{
+		case 0://inicializacion
+			xp = 0;
+			yp = 0;
+			t = 0;
+			break;
+		case 1:
+			if (yp >= 0) {
+				xp = 15.0f*t;
+				yp = (-0.5*9.8*t*t) + 35.0*t;
+				t += 0.09;
+			}
+			else
+		default:
+			break;
+		}
+	
+	
+}
 
 void CreateShaders()
 {
@@ -469,8 +496,13 @@ void CreateShaders()
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
+float dirx, diry,tiempo;
+void cicloDia() {
+	tiempo += 0.002*deltaTime;
+	dirx = -sin(tiempo + toRadians);
+	diry = -cos(tiempo + toRadians);
 
-
+}
 
 int main()
 {
@@ -514,6 +546,30 @@ int main()
 		82.95f, 15.0f, -120.84f,
 		0.8f, 0.1f, 0.1f);
 	pointLightCount++;
+	//luces pala las luciernagas
+	pointLights[1] = PointLight(1.0f, 0.5f, 0.3f,
+		9.0f, 30.0f,
+		82.95f, 15.0f, -120.84f,
+		0.8f, 0.1f, 0.1f);
+	pointLightCount++;
+
+	pointLights[2] = PointLight(0.113f, 0.81f, 0.8f,
+		9.0f, 30.0f,
+		82.95f, 15.0f, -120.84f,
+		0.8f, 0.1f, 0.1f);
+	pointLightCount++;
+	pointLights[3] = PointLight(0.58, 0.023f, 0.26f,
+		9.0f, 30.0f,
+		82.95f, 15.0f, -120.84f,
+		0.8f, 0.1f, 0.1f);
+	pointLightCount++;
+
+	pointLights[4] = PointLight(0.22f, 0.698f, 0.29f,
+		9.0f, 30.0f,
+		82.95f, 15.0f, -120.84f,
+		0.8f, 0.1f, 0.1f);
+	pointLightCount++;
+
 
 	tv = Model();
 	tv.LoadModel("Models/tv/tv_optimizado.obj");
@@ -539,10 +595,15 @@ int main()
 	interrogacion = Model();
 	interrogacion.LoadModel("Models/cajas/interrogacion_optimizado.obj");
 	//////////////////////////////////////////////////////////Carda de modelos animación
-	Mariposa mariposa1 = Mariposa(0.0f, 5.0f, 0.0f);
+	Mariposa mariposa1 = Mariposa(50.0f, 10.0f, 50.0f);
+	Mariposa mariposa2 = Mariposa(50.0f, 20.0f, 50.0f);
+	Mariposa mariposa3 = Mariposa(70.0f, 10.0f, 70.0f);
 	palmera_animacion palmeraAnimada = palmera_animacion(-114.0f,-4.0f,-119.f);
-
-
+	//Luciernaga luciernaga1 = Luciernaga(102.84, 26.0, -266.0);
+	Luciernaga luciernaga1 = Luciernaga(102.6, 26.0, -254.9);
+	Luciernaga luciernaga2 = Luciernaga(-120.8, 26.0, -254.9);
+	Luciernaga luciernaga3 = Luciernaga(102.6+25.0, 26.0, -254.9);
+	Luciernaga luciernaga4 = Luciernaga(-120.8-25.0, 26.0, -254.9);
 
 	/////////////////////////////////////////////////////////Creación de crash
 	cuerpoCrash();
@@ -573,7 +634,8 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
-
+		mainLight.setDir(dirx, diry, 0.0f);
+		cicloDia();
 		//Recibir eventos del usuario
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
@@ -593,10 +655,13 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix(camaraT)));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		
+		pointLights[1].setPosition(luciernaga1.getPos());
+		pointLights[2].setPosition(luciernaga2.getPos());
+		pointLights[3].setPosition(luciernaga3.getPos());
+		pointLights[4].setPosition(luciernaga4.getPos());
 		////////////////////////////////////////////ILUMINACION
 		shaderList[0].SetDirectionalLight(&mainLight);
-		shaderList[0].SetPointLights(pointLights, pointLightCount);
+		shaderList[0].SetPointLights(pointLights, 5);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
@@ -745,6 +810,30 @@ int main()
 		
 		palmeraAnimada.dibujar(uniformModel);
 		palmeraAnimada.animacion(&activar);
+		mariposa1.aleteo();
+		mariposa1.dibujar(uniformModel);
+
+		mariposa2.aleteo();
+		mariposa2.dibujar(uniformModel);
+
+		mariposa3.aleteo();
+		mariposa3.dibujar(uniformModel);
+
+		luciernaga1.dibujar(uniformModel);
+		luciernaga1.aleteo();
+		luciernaga1.trayectoria1(deltaTime,0.0);
+		luciernaga2.dibujar(uniformModel);
+		luciernaga2.aleteo();
+		luciernaga2.trayectoria2(deltaTime, 0.0);
+		luciernaga3.dibujar(uniformModel);
+		luciernaga3.aleteo();
+		luciernaga3.trayectoria1(deltaTime, 25.0);
+		luciernaga4.dibujar(uniformModel);
+		luciernaga4.aleteo();
+		luciernaga4.trayectoria2(deltaTime, -25.0);
+		/////////////////////////////////////////////////////////////
+		palmeraAnimada.dibujar_wumpa(0.0f+xp, 4.0f+yp, -0.0f+zp, uniformModel);
+		parabolico_wumpa();
 		glUseProgram(0);
 
 		mainWindow.swapBuffers();
@@ -759,22 +848,22 @@ void teclado(bool* keys) {
 	if (keys[GLFW_KEY_J]) {
 			rotCaminar = -90.0f;
 			animCaminar = true;
-			posxCrash = posxCrash - 0.1f;
+			posxCrash = posxCrash - 0.4f;
 	}
 	 else if (keys[GLFW_KEY_L]) {
 			rotCaminar = 90.0f;
 			animCaminar = true;
-			posxCrash = posxCrash + 0.1f;
+			posxCrash = posxCrash + 0.4f;
 	}
 	else if (keys[GLFW_KEY_K]) {
 			rotCaminar = 0.0f;
 			animCaminar = true;
-			posyCrash = posyCrash + 0.1f;
+			posyCrash = posyCrash + 0.4f;
 	}
 	else if (keys[GLFW_KEY_I]) {
 			rotCaminar = 180.0f;
 			animCaminar = true;
-			posyCrash = posyCrash - 0.1f;
+			posyCrash = posyCrash - 0.4f;
 	}
 	else
 	{
@@ -791,5 +880,12 @@ void teclado(bool* keys) {
 			ataque = true;
 			edoataque = 0;
 		}
+		if (posxCrash >= -15.0 &&posxCrash <= 15.0 && posyCrash >= -15.0 && posyCrash <= 15.0) {
+			edoParabolico = 1.0;
+		}
+	}
+	if (keys[GLFW_KEY_3]) {
+		edoParabolico = 0.0;
+
 	}
 }
