@@ -14,17 +14,17 @@ Mariposa::Mariposa(float x, float y, float z) {
 
 void Mariposa:: aleteo() {
 	if (direccion_aleteo) {
-		rotacion_ala = rotacion_ala - 0.1f;
+		rotacion_ala = rotacion_ala - 0.6f;
 		if (rotacion_ala <= -35.0f)
 			direccion_aleteo = false;
 	}
 	else {
-		rotacion_ala = rotacion_ala + 0.1f;
+		rotacion_ala = rotacion_ala + 0.6f;
 		if (rotacion_ala >= -0.0f)
 			direccion_aleteo = true;
 	}
-	anguloy = anguloy + 0.1f;
-	angulo_trayecto = angulo_trayecto + 0.1f;
+	anguloy = anguloy + 0.6f;
+	angulo_trayecto = angulo_trayecto + 0.6f;
 	plusym = 5 * sin(anguloy*toRadians);
 	plusxm = 10 * cos(angulo_trayecto*toRadians);
 	pluszm = 5 * sin(angulo_trayecto*toRadians);

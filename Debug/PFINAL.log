@@ -1,8 +1,17 @@
-﻿  Camera.cpp
-  CargaModelos.cpp
+﻿  CargaModelos.cpp
 c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\window.h(12): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
 c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\window.h(13): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(572): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(574): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-  Generando código...
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(469): warning C4244: 'inicializando': conversión de 'double' a 'int'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(482): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(483): warning C4305: '+=': truncamiento de 'double' a 'float'
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(501): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(564): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(603): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(604): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(605): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(606): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(633): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(635): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(884): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+c:\users\juang\documents\2022-2\c_graf\lab\lab_sol\pfinal\cargamodelos.cpp(888): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
   PFINAL.vcxproj -> C:\Users\juang\Documents\2022-2\C_graf\lab\Lab_sol\Debug\PFINAL.exe
