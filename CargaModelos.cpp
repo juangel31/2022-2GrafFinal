@@ -497,13 +497,97 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 float dirx, diry,tiempo;
+bool dia;
 void cicloDia() {
-	tiempo += 0.002*deltaTime;
-	dirx = -sin(tiempo + toRadians);
-	diry = -cos(tiempo + toRadians);
+	tiempo += 0.2*deltaTime;
+	dirx = -sin(tiempo *toRadians);
+	diry = -cos(tiempo* toRadians);
+	if (tiempo > 90 &&tiempo<270) 
+		dia = false;
+	else
+		dia = true;
 
+	if (tiempo >= 360) {
+		tiempo = 0.0f;
+	}
+	printf("%f\n",tiempo);
 }
+bool tv_encendido;
+bool control=true;
+bool tiki=true;
 
+unsigned int spotLightCount = 0;
+unsigned int pointLightCount = 0;
+void reordenar_luces(Luciernaga *luciernaga1, Luciernaga *luciernaga2, Luciernaga *luciernaga3, Luciernaga *luciernaga4) {
+	if (dia) {
+		pointLights[0] = PointLight(1.0f, 0.5f, 0.0f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		
+		//luces pala las luciernagas
+		pointLights[1] = PointLight(1.0f, 0.5f, 0.3f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+	
+		pointLights[2] = PointLight(0.113f, 0.81f, 0.8f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		
+		pointLights[3] = PointLight(0.58, 0.023f, 0.26f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		
+
+		pointLights[4] = PointLight(0.22f, 0.698f, 0.29f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		if (tiki)
+			pointLightCount = 1.0;
+		else
+			pointLightCount = 0.0;
+	}
+	else {
+		pointLights[4] = PointLight(1.0f, 0.5f, 0.0f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		
+		//luces pala las luciernagas
+		pointLights[1] = PointLight(1.0f, 0.5f, 0.3f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+	
+		pointLights[2] = PointLight(0.113f, 0.81f, 0.8f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		
+		pointLights[3] = PointLight(0.58, 0.023f, 0.26f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		
+
+		pointLights[0] = PointLight(0.22f, 0.698f, 0.29f,
+			9.0f, 30.0f,
+			82.95f, 15.0f, -120.84f,
+			0.8f, 0.1f, 0.1f);
+		pointLights[0].setPosition(luciernaga1->getPos());
+		pointLights[1].setPosition(luciernaga2->getPos());
+		pointLights[2].setPosition(luciernaga3->getPos());
+		pointLights[3].setPosition(luciernaga4->getPos());
+		if (tiki)
+			pointLightCount = 5.0;
+		else
+			pointLightCount = 4.0;
+	}
+}
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
@@ -539,7 +623,6 @@ int main()
 	suelo.LoadModel("Models/suelo/suelo_optimizado.obj");
 	totem = Model();
 	totem.LoadModel("Models/totem/totem_optimizado.obj");
-	unsigned int pointLightCount = 0;
 	//Declaración de primer luz puntual
 	pointLights[0] = PointLight(1.0f, 0.5f, 0.0f,
 		9.0f, 30.0f,
@@ -573,7 +656,6 @@ int main()
 
 	tv = Model();
 	tv.LoadModel("Models/tv/tv_optimizado.obj");
-	unsigned int spotLightCount = 0;
 	//linterna
 	spotLights[0] = SpotLight(0.3f, 0.3f, 0.3f,
 		1.0f, 1.0f,
@@ -655,13 +737,11 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix(camaraT)));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		pointLights[1].setPosition(luciernaga1.getPos());
-		pointLights[2].setPosition(luciernaga2.getPos());
-		pointLights[3].setPosition(luciernaga3.getPos());
-		pointLights[4].setPosition(luciernaga4.getPos());
+		
 		////////////////////////////////////////////ILUMINACION
+		reordenar_luces(&luciernaga1, &luciernaga2, &luciernaga3, &luciernaga4);
 		shaderList[0].SetDirectionalLight(&mainLight);
-		shaderList[0].SetPointLights(pointLights, 5);
+		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
@@ -879,10 +959,31 @@ void teclado(bool* keys) {
 		if (edoataque == 4 && !ataque) {
 			ataque = true;
 			edoataque = 0;
+			control = true;
 		}
+		
 		if (posxCrash >= -15.0 &&posxCrash <= 15.0 && posyCrash >= -15.0 && posyCrash <= 15.0) {
 			edoParabolico = 1.0;
 		}
+
+		if (posxCrash <= 120.0 &&posxCrash >= 110.0 && posyCrash >= -13.0 && posyCrash <= -2.0 &&control) {
+			if (tv_encendido) {
+				spotLightCount = 1;
+				tv_encendido = false;
+			}
+			else {
+				spotLightCount = 0;
+				tv_encendido = true;
+			}
+			control = false;
+		}
+		
+	}
+	if (keys[GLFW_KEY_O]) {
+		tiki = true;
+	}
+	if (keys[GLFW_KEY_P]) {
+		tiki = false;
 	}
 	if (keys[GLFW_KEY_3]) {
 		edoParabolico = 0.0;
