@@ -510,7 +510,6 @@ void cicloDia() {
 	if (tiempo >= 360) {
 		tiempo = 0.0f;
 	}
-	printf("%f\n",tiempo);
 }
 bool tv_encendido;
 bool control=true;
@@ -966,7 +965,7 @@ void teclado(bool* keys) {
 			edoParabolico = 1.0;
 		}
 
-		if (posxCrash <= 120.0 &&posxCrash >= 110.0 && posyCrash >= -13.0 && posyCrash <= -2.0 &&control) {
+		if (posxCrash <= 130.0 &&posxCrash >= 105.0 && posyCrash >= -20.0 && posyCrash <= -.0 &&control) {
 			if (tv_encendido) {
 				spotLightCount = 1;
 				tv_encendido = false;

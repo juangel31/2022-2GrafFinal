@@ -30,30 +30,30 @@ void palmera_animacion::animacion(bool *activar) {
 		break;
 
 	case 1://cae la manzana
-		plusy = plusy - 0.1f;
+		plusy = plusy - 0.3f;
 		if (plusy <= -35.8f)
 			edo = 2;
 		break;
 
 	case 2://se eleva
-		plusy = plusy + 0.1f;
+		plusy = plusy + 0.3f;
 		if (plusy >= -24.93)
 			edo = 3;
 		break;
 	case 3://vuelve a caer
-		plusy = plusy - 0.1f;
-		if (plusy <= -35.8f)
+		plusy = plusy - 0.3f;
+		if (plusy <= -33.8f)
 			edo = 4;
 		break;
 	case 4://gira al borde
-		plusz = plusz - 0.1f;
+		plusz = plusz - 0.3f;
 		rot_wumpa--;
-		if (plusz <= -25.53)
+		if (plusz <= -30.53)
 			edo = 5;
 		break;
 	case 5://cae del sillon
-		plusz = plusz - 0.1f;
-		plusy = plusy - 0.1f;
+		plusz = plusz - 0.3f;
+		plusy = plusy - 0.3f;
 		rot_wumpa++;
 		if (plusy <= -56.3)
 			edo = 6;
