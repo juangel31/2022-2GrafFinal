@@ -17,6 +17,7 @@ private:
 	float rotacion_ala = 0.0f, anguloy = 0.0f, angulo_trayecto = 0.0f;
 	bool direccion_aleteo = true;
 	float plusxm, plusym, pluszm,posx,posy,posz;
+	float round;
 	Model mariposa_cuerpo;
 	Model mariposa_ala1;
 	Model mariposa_ala2;
